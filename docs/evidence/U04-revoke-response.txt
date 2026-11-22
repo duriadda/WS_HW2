@@ -1,0 +1,24 @@
+POST /api/applications/1/revoke → HTTP 200
+요청 본문: {"reason":"행사 운영 사정으로 승인 취소"} (Authorization 토큰은 기록하지 않음)
+{
+  "revoked": {
+    "id": 1,
+    "eventId": 2,
+    "userId": 1,
+    "status": "REVOKED",
+    "createdAt": "2026-11-22T08:02:36.319Z",
+    "updatedAt": "2026-11-22T08:04:17.384Z",
+    "applicantName": "민지",
+    "eventTitle": "서비스 설계 스터디"
+  },
+  "promoted": {
+    "id": 2,
+    "eventId": 2,
+    "userId": 2,
+    "status": "APPROVED",
+    "createdAt": "2026-11-22T08:02:56.785Z",
+    "updatedAt": "2026-11-22T08:04:17.385Z",
+    "applicantName": "준호",
+    "eventTitle": "서비스 설계 스터디"
+  }
+}
