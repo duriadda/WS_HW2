@@ -98,11 +98,45 @@ npm run db:reset
 - `tests/`: 기반·필수·선택 심화 테스트
 - `docs/API.md`: 상태·이력·입출력 계약
 
-## 제출 전 작성할 내용
+## 제출 내용
 
-이 부분을 본인의 서비스 소개, 변경 파일, 구현 완료 여부, 실행 환경, 알려진 문제, 보고서·검증 증거 링크와 AI 사용 요약으로 바꾸세요. GitHub URL·커밋 SHA를 LMS에 제출하고 보고서 PDF를 저장소 `docs/report.pdf`와 LMS에 같은 버전으로 첨부합니다.
+### 서비스 소개
 
-`node_modules`, 생성 DB·서명 키, 실제 `.env`·JWT와 개인 정보는 제출하지 않습니다. 제공 코드와 직접 구현한 부분을 구분합니다.
+학생이 행사에 참가를 신청하고, 담당 운영자가 정원 안에서 승인하거나 승인을 취소하는 서비스입니다. 승인이 취소되면 같은 행사에서 가장 먼저 대기한 학생 1명이 자동으로 승인됩니다. 모든 상태 변경은 변경 이력에 남고, 각 요청은 하나의 SQLite 트랜잭션으로 처리됩니다.
+
+### 변경 파일 (제공 코드와 구분)
+
+|파일|구분|내용|
+|---|---|---|
+|`src/application-service.js`|직접 구현|`---- 이하 학생 구현 ----` 아래 전체. `transaction()`(BEGIN IMMEDIATE / COMMIT / ROLLBACK), `apply`, `cancel`, `approve`, `revoke`|
+|`src/repository.js`|직접 추가|`nextPending(eventId)` 1개(주석 `[학생 추가]`). 같은 행사 PENDING을 `created_at ASC, id ASC LIMIT 1`로 조회|
+|`docs/evidence/`|검증 증거|테스트 로그, DB 덤프, 화면 캡처 24장, `detail-evidence.test.js`·`.txt`(거부·롤백·대기 순서 전후 데이터)|
+|`docs/diagrams/`|보고서 그림|상태 전이도, 승인 취소 시퀀스 다이어그램(SVG 원본과 PNG)|
+|`docs/report.pdf`, `docs/report.docx`|보고서|제출 보고서와 편집용 원본|
+
+그 외 파일(`src/app.js`, `auth.js`, `db.js`, `errors.js`, `server.js`, `public/`, `tests/`, `scripts/`)은 제공된 그대로입니다. 첫 커밋 "제공 시작 코드 원본"과 `git diff`로 비교할 수 있습니다.
+
+### 구현 완료 여부
+
+- TODO-01~04와 트랜잭션: 완료
+- `npm test` 4/4, `npm run test:assignment` 32/32, `npm run test:advanced`(선택) 1/1 통과. 로그는 `docs/evidence/test-*.txt`에 있습니다.
+- 화면 검증 U01~U05 완료. 증거는 `docs/evidence/screens/`, `docs/evidence/U0*-*.txt`에 있습니다.
+
+### 실행 환경
+
+macOS (arm64), Node.js v24.22.3, npm 11.19.1, Google Chrome. 설치·실행·초기화 방법은 위 "실행"과 "DB 초기화" 절을 따릅니다. 세부 증거를 다시 만들려면 `node --test docs/evidence/detail-evidence.test.js`를 실행합니다.
+
+### 알려진 문제와 한계
+
+- 동시성은 `BEGIN IMMEDIATE`의 DB 전체 쓰기 잠금으로 보호합니다. 서버 2개로 20회 반복한 테스트가 통과했지만, 이것이 모든 경쟁 상황이 없다는 증명은 아닙니다. 잠금 대기가 5초(busy_timeout)를 넘으면 500으로 응답하며 자동 재시도는 없습니다.
+- 화면은 다른 탭의 변경을 자동으로 반영하지 않습니다. 오래된 화면에서 보낸 요청은 서버가 409로 거부합니다.
+
+### 보고서와 AI 사용 요약
+
+- 보고서: [docs/report.pdf](docs/report.pdf)
+- AI 사용: Claude Code(Claude Opus 5.5)로 구현, 테스트 실행, Chrome 자동화를 이용한 화면 검증, 다이어그램, 보고서 초안 작성을 했습니다. 반영한 파일과 검증 내용은 보고서 7장 "AI 활용과 참고 자료"에 정리했습니다.
+
+`node_modules`, 생성된 DB·서명 키(`data/`), `.env`, JWT는 `.gitignore`로 제외했습니다. 계정은 모두 가상 계정입니다.
 
 ## 참고 문서
 

@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="560" viewBox="0 0 1000 560" font-family="Apple SD Gothic Neo, Malgun Gothic, sans-serif">
+  <!-- 신청 상태 전이도: 허용 전이(실선)와 주체, 금지 전이(오른쪽 표) -->
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#222"/></marker>
+    <marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1a7f37"/></marker>
+  </defs>
+  <rect width="1000" height="560" fill="#fff"/>
+  <text x="20" y="32" font-size="20" font-weight="700">신청 상태 전이도</text>
+  <text x="20" y="54" font-size="13" fill="#555">실선 = 허용 전이(행위 · 수행 주체 · 서비스 함수). 이중 테두리 = 종료 상태.</text>
+
+  <!-- 시작점 -->
+  <circle cx="60" cy="250" r="12" fill="#222"/>
+  <line x1="72" y1="250" x2="168" y2="250" stroke="#222" stroke-width="2" marker-end="url(#a)"/>
+  <text x="80" y="236" font-size="13" font-weight="700">APPLY</text>
+  <text x="80" y="272" font-size="12">학생 본인</text>
+  <text x="80" y="288" font-size="12" fill="#555">apply()</text>
+
+  <!-- PENDING -->
+  <rect x="170" y="215" width="150" height="70" rx="12" fill="#fff6d6" stroke="#b08800" stroke-width="2"/>
+  <text x="245" y="248" font-size="17" font-weight="700" text-anchor="middle">PENDING</text>
+  <text x="245" y="268" font-size="12" text-anchor="middle">승인 대기</text>
+
+  <!-- APPROVED -->
+  <rect x="470" y="105" width="150" height="70" rx="12" fill="#dafbe1" stroke="#1a7f37" stroke-width="2"/>
+  <text x="545" y="138" font-size="17" font-weight="700" text-anchor="middle">APPROVED</text>
+  <text x="545" y="158" font-size="12" text-anchor="middle">참가 승인 (정원 포함)</text>
+
+  <!-- CANCELLED -->
+  <rect x="164" y="415" width="162" height="76" rx="12" fill="#f0f0f0" stroke="#555" stroke-width="2"/>
+  <rect x="170" y="421" width="150" height="64" rx="9" fill="none" stroke="#555" stroke-width="1.5"/>
+  <text x="245" y="450" font-size="17" font-weight="700" text-anchor="middle">CANCELLED</text>
+  <text x="245" y="470" font-size="12" text-anchor="middle">대기 취소 · 종료</text>
+
+  <!-- REVOKED -->
+  <rect x="464" y="409" width="162" height="76" rx="12" fill="#ffebe9" stroke="#cf222e" stroke-width="2"/>
+  <rect x="470" y="415" width="150" height="64" rx="9" fill="none" stroke="#cf222e" stroke-width="1.5"/>
+  <text x="545" y="444" font-size="17" font-weight="700" text-anchor="middle">REVOKED</text>
+  <text x="545" y="464" font-size="12" text-anchor="middle">승인 취소 · 종료</text>
+
+  <!-- PENDING → APPROVED (직접 승인) -->
+  <path d="M320,232 C380,200 410,160 468,145" fill="none" stroke="#222" stroke-width="2" marker-end="url(#a)"/>
+  <text x="270" y="110" font-size="13" font-weight="700">APPROVE</text>
+  <text x="270" y="126" font-size="12">담당 운영자 · approve()</text>
+  <text x="270" y="142" font-size="12" fill="#555">승인 인원 &lt; 정원일 때만</text>
+
+  <!-- PENDING → APPROVED (자동 승급) -->
+  <path d="M320,268 C400,262 450,210 500,177" fill="none" stroke="#1a7f37" stroke-width="2" stroke-dasharray="7 4" marker-end="url(#g)"/>
+  <text x="372" y="288" font-size="13" font-weight="700" fill="#1a7f37">AUTO_APPROVE</text>
+  <text x="372" y="304" font-size="12" fill="#1a7f37">revoke() 내부 · 행위자 = 취소한 운영자</text>
+  <text x="372" y="320" font-size="12" fill="#1a7f37">같은 행사 첫 대기자 1명 (created_at, id)</text>
+
+  <!-- PENDING → CANCELLED -->
+  <line x1="245" y1="285" x2="245" y2="413" stroke="#222" stroke-width="2" marker-end="url(#a)"/>
+  <text x="255" y="352" font-size="13" font-weight="700">CANCEL</text>
+  <text x="255" y="368" font-size="12">신청한 학생 · cancel()</text>
+  <text x="255" y="384" font-size="12" fill="#555">자동 승급 없음</text>
+
+  <!-- APPROVED → REVOKED -->
+  <line x1="580" y1="175" x2="580" y2="407" stroke="#222" stroke-width="2" marker-end="url(#a)"/>
+  <text x="590" y="240" font-size="13" font-weight="700">REVOKE</text>
+  <text x="590" y="256" font-size="12">담당 운영자 · revoke()</text>
+  <text x="590" y="272" font-size="12" fill="#555">사유 trim 후 5~200자</text>
+  <text x="590" y="288" font-size="12" fill="#555">→ 대기자 1명 AUTO_APPROVE</text>
+
+  <!-- 금지 전이 표 -->
+  <rect x="745" y="80" width="235" height="420" rx="10" fill="#fafafa" stroke="#999"/>
+  <text x="760" y="106" font-size="15" font-weight="700" fill="#cf222e">금지 전이와 거부 위치</text>
+  <g font-size="12">
+    <text x="760" y="134" font-weight="700">APPROVED → CANCELLED</text>
+    <text x="760" y="150">학생 직접 취소 불가</text>
+    <text x="760" y="166" fill="#555">cancel(): status≠PENDING → 409</text>
+
+    <text x="760" y="196" font-weight="700">APPROVED → APPROVED</text>
+    <text x="760" y="212">재승인 불가</text>
+    <text x="760" y="228" fill="#555">approve(): status≠PENDING → 409</text>
+
+    <text x="760" y="258" font-weight="700">PENDING / CANCELLED → REVOKED</text>
+    <text x="760" y="274">승인되지 않은 신청 승인 취소</text>
+    <text x="760" y="290" fill="#555">revoke(): status≠APPROVED → 409</text>
+
+    <text x="760" y="320" font-weight="700">CANCELLED · REVOKED → *</text>
+    <text x="760" y="336">종료 상태: 재승인·재취소 불가</text>
+    <text x="760" y="352" fill="#555">세 함수 모두 상태 검사에서 409</text>
+
+    <text x="760" y="382" font-weight="700">없음 → PENDING (재신청)</text>
+    <text x="760" y="398">기존 신청이 있으면 상태 무관 거부</text>
+    <text x="760" y="414" fill="#555">apply(): existing() → 409</text>
+    <text x="760" y="430" fill="#555">UNIQUE 위반(2067) → 409</text>
+
+    <text x="760" y="460" font-weight="700">PENDING → APPROVED (정원 초과)</text>
+    <text x="760" y="476" fill="#555">approve(): 승인 수 ≥ 정원 → 409</text>
+  </g>
+  <text x="20" y="540" font-size="12" fill="#555">모든 거부는 transaction() 안에서 예외로 던져져 ROLLBACK되므로 상태·이력이 바뀌지 않습니다. 검사 순서: 존재 404 → 권한 403 → 상태 409 → 정원 409.</text>
+</svg>
